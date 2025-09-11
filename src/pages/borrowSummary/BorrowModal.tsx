@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { useBorrowBookMutation } from "../../redux/api/baseApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
+import type { FetchBaseQueryError } from "@reduxjs/toolkit/query";
 
 interface BorrowModalProps {
   setIsBorrowOpen: (open: boolean) => void;
@@ -10,13 +11,17 @@ interface BorrowModalProps {
 
 interface BorrowFormValues {
   quantity: number;
-  dueDate: string; // ISO date string
+  dueDate: string;
 }
 
 const BorrowModal = ({ setIsBorrowOpen, bookId }: BorrowModalProps) => {
   const {reset, register, handleSubmit, formState: { errors } } = useForm<BorrowFormValues>();
   const navigate = useNavigate()
   const [borrowBook] = useBorrowBookMutation()
+
+  function isFetchBaseQueryError(error: unknown): error is FetchBaseQueryError {
+  return typeof error === "object" && error != null && "status" in error;
+}
 
   const onSubmit = async(data: BorrowFormValues) => {
     const payload = {
@@ -31,9 +36,17 @@ const BorrowModal = ({ setIsBorrowOpen, bookId }: BorrowModalProps) => {
         reset();
         setIsBorrowOpen(false)
         navigate("/borrowSummary")
-      } catch (err) {
-        const errorMessage = err?.data?.message || "An unexpected error occurred";
-        console.error("Book Borrow failed:", errorMessage);
+      } catch (err:unknown) {
+       let errorMessage = "An unexpected error occurred";
+
+  if (isFetchBaseQueryError(err)) {
+    const errMsg =
+      "data" in err ? (err.data as { message?: string })?.message : undefined;
+    if (errMsg) errorMessage = errMsg;
+  } else if (err instanceof Error) {
+    errorMessage = err.message;
+  }
+       
         toast.error(`${errorMessage}. Please try again`);
       }
 
