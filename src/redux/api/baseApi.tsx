@@ -5,7 +5,7 @@ import type { IBBSResponse,IBorrowRequest, IBorrowResponse } from "../types/borr
 
 export const baseApi = createApi({
     reducerPath: "api",
-    baseQuery: fetchBaseQuery({baseUrl: "http://localhost:5000/api"}),
+    baseQuery: fetchBaseQuery({baseUrl: "https://assignment3-moon-exp.vercel.app"}),
     tagTypes: ["Book","Borrow"],
     endpoints: (builder) => ({
         getBooks: builder.query<IGetBooksResponse, {page:number,limit:number}>({
