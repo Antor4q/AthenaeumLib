@@ -23,7 +23,7 @@ This project demonstrates clean state management, REST API integration, and esse
 - **Tailwind CSS** for styling
   
 
-## Run in lovally
+## Run in locally
 - npm install
 - npm run dev
 
