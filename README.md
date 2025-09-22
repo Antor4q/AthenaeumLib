@@ -24,6 +24,7 @@ This project demonstrates clean state management, REST API integration, and esse
   
 
 ## Run in locally
+- Git clone
 - npm install
 - npm run dev
 
